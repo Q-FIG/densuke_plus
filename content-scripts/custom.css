@@ -1,0 +1,16 @@
+.d-plus-area {
+  background-color: #ffcc6e;
+  padding: 5px;
+}
+
+.d-plus-area span {
+  padding: 6px;
+}
+
+label#plusScheduleYear {
+  display: none;
+}
+
+select:has(> option[value="祝日"]) + label#plusScheduleYear {
+  display: inline-block;
+}
