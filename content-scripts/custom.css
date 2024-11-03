@@ -7,7 +7,7 @@
   padding: 6px;
 }
 
-label#plusScheduleYear {
+label#scheduleYearArea.none-yearinput {
   display: none;
 }
 

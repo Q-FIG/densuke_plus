@@ -5,16 +5,6 @@
  */
 
 // 祝日を取得する
-// import holiday_jp from '@holiday-jp/holiday_jp';
-// let holiday_jp = require('@holiday-jp/holiday_jp');
-// fetch('https://trusted-source.com/script.js')
-//   .then(response => response.text())
-//   .then(code => {
-//     // スクリプトの内容をFunctionコンストラクタで実行
-//     const executeScript = new Function(code);
-//     executeScript();
-//   })
-//   .catch(error => console.error('外部スクリプトの読み込みに失敗しました', error));
 
 // 定数
 const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
@@ -51,9 +41,20 @@ let cBulkFlgCheck = false;
 
   // 選択肢
   const selectMode = document.createElement('select');
+  selectMode.className = 'c-item';
+
+  const noneYearinput = 'none-yearinput'; // 非表示にするクラス名
   selectMode.addEventListener('change', function(event) {
     // console.log(`選択したモードが、「${selectedBulkInsertModeNum}」から「${event.target.value}」に変更されます`);
     selectedBulkInsertModeNum = event.target.value;
+
+    // 祝日を選択したなら、年入力欄を表示、その他なら非表示
+    const yearInput = document.querySelector('label#scheduleYearArea');
+    if (event.target.value == "祝日" && yearInput.classList.contains(noneYearinput)) {
+      yearInput.classList.remove(noneYearinput);
+    } else if (event.target.value != "祝日" && !yearInput.classList.contains(noneYearinput)) {
+      yearInput.classList.add(noneYearinput);
+    }
   });
   
   // 選択要素の追加
@@ -73,7 +74,8 @@ let cBulkFlgCheck = false;
 
   // 何年の予定なのか指定する欄の追加（祝日指定の場合）
   const startYearInputLabel = document.createElement('label');
-  startYearInputLabel.className = 'c-item';
+  startYearInputLabel.id = 'scheduleYearArea';
+  startYearInputLabel.className = 'c-item none-yearinput';
   startYearInputLabel.textContent = '何年の予定か：';
   // 入力欄
   const startYearInput = document.createElement('input');
