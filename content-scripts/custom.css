@@ -14,3 +14,15 @@ label#plusScheduleYear {
 select:has(> option[value="祝日"]) + label#plusScheduleYear {
   display: inline-block;
 }
+
+#scheduleYear {
+  width: 50px;
+}
+
+.d-plus-area .c-item {
+  margin: 0 3px;
+}
+
+.btnsp {
+  cursor: pointer;
+}
