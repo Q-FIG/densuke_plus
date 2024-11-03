@@ -45,7 +45,8 @@ let cBulkFlgCheck = false;
 
   // 追加分タイトル
   const summary = document.createElement('summary');
-  summary.textContent = '【拡張分】曜日・祝日指定で、一括で変更する';
+  summary.textContent = '【拡張分】曜日指定で、一括で変更する';
+  // summary.textContent = '【拡張分】曜日・祝日指定で、一括で変更する';
   addArea.appendChild(summary);
 
   // 選択肢
