@@ -11,6 +11,13 @@
       ],
       "js": ["content-scripts/edit.js"],
       "css": ["content-scripts/custom.css"]
+    },
+    {
+      "matches": [
+        "https://densuke.biz/list?*"
+      ],
+      "js": ["content-scripts/list.js"],
+      "css": ["content-scripts/custom.css"]
     }
   ]
 }
