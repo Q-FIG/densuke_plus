@@ -31,3 +31,17 @@ select:has(> option[value="祝日"]) + label#plusScheduleYear {
 .d-plus-area dd {
   margin-inline-start: 0;
 }
+
+input[type="radio"].radio-btn {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  /* top: 0; */
+  left: -10px;
+  z-index: 1; /* ラジオボタンを最前面に配置 */
+}
+
+.radio-view {
+  z-index: 0;
+}
