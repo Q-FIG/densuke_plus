@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "伝助+",
   "description": "伝助入力を便利にする",
-  "version": "1.0",
+  "version": "1.1",
   "content_scripts": [
     {
       "matches": [
@@ -16,7 +16,7 @@
       "matches": [
         "https://densuke.biz/list?*"
       ],
-      "js": ["content-scripts/list.js"],
+      "js": ["dist/list.js"],
       "css": ["content-scripts/custom.css"]
     }
   ]

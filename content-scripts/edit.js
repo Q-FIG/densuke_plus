@@ -7,7 +7,7 @@
 const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
   console.log('拡張機能により、日付入力を追加します');
 
-function start() {
+(() => {
   const rows = document.querySelectorAll('div.regist tr');
   let target = null;
   
@@ -65,8 +65,7 @@ function start() {
     
     target.appendChild(addArea);
   }
-}
-start();
+})();
 
 /**
  * 指定した日付の追加処理を実行する
