@@ -27,3 +27,7 @@ select:has(> option[value="祝日"]) + label#plusScheduleYear {
 .btnsp {
   cursor: pointer;
 }
+
+.d-plus-area dd {
+  margin-inline-start: 0;
+}

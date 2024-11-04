@@ -5,7 +5,6 @@
 
 // 定数
 const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
-  console.log('拡張機能により、日付入力を追加します');
 
 (() => {
   const rows = document.querySelectorAll('div.regist tr');
@@ -38,7 +37,7 @@ const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
     /**
      * 日付の入力と実行ボタン
      */
-    const addDateArea = document.createElement('dt');
+    const addDateArea = document.createElement('dd');
     
     const addStartDate = document.createElement('input');
     addStartDate.type = 'date';
@@ -65,6 +64,29 @@ const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
     
     target.appendChild(addArea);
   }
+
+  const explainArea = document.getElementsByName('explain')[0];
+
+  const saveBtnArea = document.createElement('dl');
+  saveBtnArea.className = 'd-plus-area';
+  explainArea.after(saveBtnArea);
+
+  const saveBtns = document.createElement('dd');
+  saveBtnArea.appendChild(saveBtns);
+
+  const saveBtn = document.createElement('input');
+  saveBtn.type = 'button';
+  saveBtn.value = '保存する';
+  saveBtn.className = 'c-item';
+  saveBtn.addEventListener('click', () => saveInputData());
+  saveBtns.appendChild(saveBtn);
+
+  const loadBtn = document.createElement('input');
+  loadBtn.type = 'button';
+  loadBtn.value = '保存したデータで上書きする';
+  loadBtn.className = 'c-item';
+  loadBtn.addEventListener('click', () => loadInputData());
+  saveBtns.appendChild(loadBtn);
 })();
 
 /**
@@ -83,4 +105,31 @@ function setDateListString() {
 
   const setArea = document.getElementById('schedule');
   setArea.value += result;
+}
+
+function saveInputData() {
+  // JSON形式でデータを保存する
+  const explain = document.getElementsByName('explain')[0].value;
+  const data = { explain };
+  localStorage.setItem('inputData', JSON.stringify(data));
+
+  window.alert('保存しました：' + explain);
+}
+
+function loadInputData() {
+  const savedData = localStorage.getItem('inputData');
+  if (savedData) {
+    const { explain } = JSON.parse(savedData);
+    
+    if (!window.confirm('イベント説明文は、以下で上書きされます。よろしいですか？\n' + explain)) {
+      return null;
+    }
+
+    // 入力フィールドにデータを設定
+    document.getElementsByName('explain')[0].value = explain;
+
+    // 必要に応じて使えるように変数に格納
+    return { explain };
+  }
+  return null;
 }
