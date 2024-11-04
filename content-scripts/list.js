@@ -5,11 +5,11 @@
  */
 
 // 祝日を取得する
+import { isHoliday } from "@holiday-jp/holiday_jp";
 
 // 定数
 const daysOfWeek = ["日", "月", "火", "水", "木", "金", "土"];
-const bulkInsertList = [...daysOfWeek, "平日", "土日"];
-// const bulkInsertList = [...daysOfWeek, "平日", "土日", "祝日"];
+const bulkInsertList = [...daysOfWeek, "平日", "土日", "祝日"];
 const customBulkWeeks = {
   "平日": ["月", "火", "水", "木", "金"],
   "土日": ["土", "日"]
@@ -35,8 +35,7 @@ let cBulkFlgCheck = false;
 
   // 追加分タイトル
   const summary = document.createElement('summary');
-  summary.textContent = '【拡張分】曜日指定で、一括で変更する';
-  // summary.textContent = '【拡張分】曜日・祝日指定で、一括で変更する';
+  summary.textContent = '【拡張分】曜日・祝日指定を、一括で変更する';
   addArea.appendChild(summary);
 
   // 選択肢
@@ -147,7 +146,7 @@ function weekChanges(key) {
 function bulkchange(id,key){
   if(document.getElementById("join-"+id).value>0 && cBulkFlgCheck==true){
   }else{
-    for(i=1;i<=4;i++){
+    for(let i=1;i<=4;i++){
       if(i==key){
         document.getElementById(id+i).className = "btnsp btnac"+key;
         document.getElementById("join-"+id).value = key;
@@ -170,10 +169,11 @@ function isTargetDay(label, year) {
   // 正規表現で月、日、曜日を抽出
   const match = label.match(/^(\d{1,2})\/(\d{1,2})\((.)\)$/);
 
-  const month = match ? match[1] : null; // 月
+  const month = match ? match[1] - 1 : null; // 月
   const day = match ? match[2] : null;   // 日
   const weekday = match ? match[3] : null; // 曜日
   const weekdayIndex = weekday ? daysOfWeek.indexOf(weekday) : null;
+  // console.log(weekdayIndex);
 
   // 指定モードが曜日
   if (daysOfWeek.includes(selectedBulkInsertModeNum)) {
@@ -186,20 +186,24 @@ function isTargetDay(label, year) {
     return customBulkWeeks[selectedBulkInsertModeNum].includes(weekday);
   }
 
-  // // 指定モードが祝日
-  // else if ("祝日" == selectedBulkInsertModeNum) {
-  //   let targetDay = undefined;
-  //   // 日付があっているか確認する
-  //   for (let i = 0; i < 5; i++) {
-  //     const confirmDay = new Date(year + i, month, day);
-  //     if (confirmDay.getDay() == weekdayIndex) {
-  //       targetDay = confirmDay;
-  //       break;
-  //     }
-  //   }
-  //   return false;
-  //   // return holiday_jp.isHoliday(targetDay);
-  // }
+  // 指定モードが祝日
+  else if ("祝日" == selectedBulkInsertModeNum) {
+    // 日付があっているか確認する
+    for (let i = 0; i < 5; i++) {
+      const confirmDay = new Date(Number(year) + i, month, day);
+      // console.log(`${confirmDay.getFullYear()}/${confirmDay.getMonth()+1}/${confirmDay.getDate()} (${confirmDay.getDay()}): ${isHoliday(confirmDay)}`);
+      if (confirmDay.getDay() == weekdayIndex) {
+        return isHoliday(confirmDay);
+      }
+    }
+    for (let i = 1; i < 4; i++) {
+      const confirmDay = new Date(Number(year) - i, month, day);
+      // console.log(`${confirmDay.getFullYear()}/${confirmDay.getMonth()+1}/${confirmDay.getDate()} (${confirmDay.getDay()}): ${isHoliday(confirmDay)}`);
+      if (confirmDay.getDay() == weekdayIndex) {
+        return isHoliday(confirmDay);
+      }
+    }
+  }
 
   return false;
 }
