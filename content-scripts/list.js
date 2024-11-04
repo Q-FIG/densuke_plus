@@ -268,11 +268,9 @@ function isTargetDay(label, year) {
   const day = match ? match[2] : null;   // 日
   const weekday = match ? match[3] : null; // 曜日
   const weekdayIndex = weekday ? daysOfWeek.indexOf(weekday) : null;
-  // console.log(weekdayIndex);
 
   // 指定モードが曜日
   if (daysOfWeek.includes(selectedBulkInsertModeNum)) {
-    // console.log(`${weekday} == ${selectedBulkInsertModeNum} -> ${weekday == selectedBulkInsertModeNum}`);
     return weekday == selectedBulkInsertModeNum;
   }
 
@@ -286,14 +284,12 @@ function isTargetDay(label, year) {
     // 日付があっているか確認する
     for (let i = 0; i < 5; i++) {
       const confirmDay = new Date(Number(year) + i, month, day);
-      // console.log(`${confirmDay.getFullYear()}/${confirmDay.getMonth()+1}/${confirmDay.getDate()} (${confirmDay.getDay()}): ${isHoliday(confirmDay)}`);
       if (confirmDay.getDay() == weekdayIndex) {
         return isHoliday(confirmDay);
       }
     }
     for (let i = 1; i < 4; i++) {
       const confirmDay = new Date(Number(year) - i, month, day);
-      // console.log(`${confirmDay.getFullYear()}/${confirmDay.getMonth()+1}/${confirmDay.getDate()} (${confirmDay.getDay()}): ${isHoliday(confirmDay)}`);
       if (confirmDay.getDay() == weekdayIndex) {
         return isHoliday(confirmDay);
       }
@@ -336,18 +332,14 @@ function pasteInputData() {
       let dataMap = {};
       Object.keys(btnChoices[4]).forEach(key => {
         const selector = document.querySelector(`input[name="convert${key}"]:checked`);
-        console.log(selector);
         dataMap[key] = selector ? selector.value : null;
       });
-      console.log('---------------------');
-      console.log(dataMap);
   
       // 入力フィールドにデータを設定
       const input_tags = document.getElementById("listtable").getElementsByTagName("tr");
       for (let i = 0; i < input_tags.length; i++) {
         const inputEle = input_tags[i].getElementsByTagName('input')[0];
         const data = dataMap[dataList[input_tags[i].getElementsByTagName('td')[0].textContent]];
-        console.log(data);
   
         // 条件：input要素を持っている行、nameがjoinで始まる、dataが存在する
         if (
