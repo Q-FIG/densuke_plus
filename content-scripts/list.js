@@ -98,13 +98,16 @@ let btnNum = 3;
   startYearInputLabel.appendChild(startYearInput);
 
   // 一括変更ボタン
-  Object.entries(btnChoices[btnNum]).forEach(([key, val]) => {
+  for (let i = 4; i > 0; i--) {
+    if (!btnChoices[btnNum][i]) continue;
+
+    // 追加する種類のボタンなら追加
     const bulkBtn = document.createElement('span');
-    bulkBtn.className = `btnsp btnac${key}`;
-    bulkBtn.addEventListener('click', () => weekChanges(key));
-    bulkBtn.textContent = val;
+    bulkBtn.className = `btnsp btnac${i}`;
+    bulkBtn.addEventListener('click', () => weekChanges(i));
+    bulkBtn.textContent = btnChoices[btnNum][i];
     addArea.appendChild(bulkBtn);
-  });
+  }
 
   // 入力済みの行は変更しない
   const cBulkFlgLabel = document.createElement('label');
@@ -160,36 +163,40 @@ let btnNum = 3;
   convertInputBtnDetails.appendChild(convertInputBtnL);
 
   // ボタンの種類分繰り返す
-  Object.entries(btnChoices[4]).forEach(([key, val]) => {
+  for (let i = 4; i > 0; i--) {
+    // コピー元のボタンの種類
     const convertBtnSet = document.createElement('dd');
     convertInputBtnL.appendChild(convertBtnSet);
 
     const convertBtnB = document.createElement('span');
-    convertBtnB.className = `btnsp btnac${key}`;
-    convertBtnB.textContent = val;
+    convertBtnB.className = `btnsp btnac${i}`;
+    convertBtnB.textContent = btnChoices[4][i];
     convertBtnSet.appendChild(convertBtnB);
 
     const convert2 = document.createTextNode(' → ');
     convertBtnSet.appendChild(convert2);
 
     // 変換先のボタンの種類を追加する
-    Object.entries(btnChoices[btnNum]).forEach(([key2, val2]) => {
+    for (let i2 = 4; i2 > 0; i2--) {
+      if (!btnChoices[btnNum][i2]) continue;
+  
+      // 追加する種類のボタンなら追加
       const convertBtnAItemLabel = document.createElement('label');
       convertBtnSet.appendChild(convertBtnAItemLabel);
 
       // ラジオボタンの表示用の要素
       const convertBtnAItem = document.createElement('span');
-      convertBtnAItem.className = `radio-view btnsp ${key === key2 ? `btnac${key2}` : 'btnna'}`;
-      convertBtnAItem.textContent = val2;
+      convertBtnAItem.className = `radio-view btnsp ${i === i2 ? `btnac${i2}` : 'btnna'}`;
+      convertBtnAItem.textContent = btnChoices[btnNum][i2];
       convertBtnAItemLabel.appendChild(convertBtnAItem);
 
       // 実際のラジオボタン
       const convertBtnAItemInput = document.createElement('input');
       convertBtnAItemInput.type = 'radio';
-      convertBtnAItemInput.name = `convert${key}`;
-      convertBtnAItemInput.value = key2;
+      convertBtnAItemInput.name = `convert${i}`;
+      convertBtnAItemInput.value = i2;
       convertBtnAItemInput.className = `radio-btn`;
-      convertBtnAItemInput.checked = key === key2;
+      convertBtnAItemInput.checked = i === i2;
       convertBtnAItemLabel.appendChild(convertBtnAItemInput);
 
       // ラジオボタンの状態に応じてクラスを切り替え
@@ -202,11 +209,11 @@ let btnNum = 3;
           }`, 'btnna'));
           
           // 選択したボタンにアクティブクラスを追加
-          convertBtnAItem.classList.replace('btnna', `btnac${key2}`);
+          convertBtnAItem.classList.replace('btnna', `btnac${i2}`);
         }
       });
-    });
-  });
+    }
+  }
 })();
 
 /**
@@ -322,6 +329,7 @@ function copyInputData() {
   window.alert('コピーしました');
 }
 
+// ペースト
 function pasteInputData() {
   navigator.clipboard.readText()
   .then(savedData => {
@@ -348,16 +356,16 @@ function pasteInputData() {
           inputEle.name.startsWith('join') &&
           data
         ) {
-  
+          // 入力フィールドのnameからとったid
           const id = inputEle.name.slice(5);
           // 切り替え
-          for(let i=1;i<=4;i++){
-            if(i==data){
-              document.getElementById(id+i).className = "btnsp btnac"+data;
-              document.getElementById("join-"+id).value = data;
-            }else{
-              if(document.getElementById(id+i)!=null){
-                document.getElementById(id+i).className = "btnsp btnna";
+          for(let i = 1; i <= 4; i++){
+            if (i == data) {
+              document.getElementById(id + i).className = "btnsp btnac" + data;
+              document.getElementById("join-" + id).value = data;
+            } else {
+              if (document.getElementById(id + i) != null){
+                document.getElementById(id + i).className = "btnsp btnna";
               }
             }
           }
