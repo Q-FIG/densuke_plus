@@ -3,6 +3,10 @@
   "name": "伝助+",
   "description": "伝助入力を便利にする",
   "version": "1.2",
+  "icons": {
+    "48": "img/densukePlus_icon48.png",
+    "128": "img/densukePlus_icon128.png"
+  },
   "content_scripts": [
     {
       "matches": [
