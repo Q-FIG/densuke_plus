@@ -19,5 +19,8 @@
       "js": ["dist/list.js"],
       "css": ["content-scripts/custom.css"]
     }
+  ],
+  "permissions": [
+    "holiday-jp"
   ]
 }
