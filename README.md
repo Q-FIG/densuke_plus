@@ -31,3 +31,7 @@ v1.2
 - ほかの伝助イベントから、既に入力した予定（○とか✕とか）をコピペ
 
 ![曜日入力](./img/list.png)
+
+# Lisence
+
+This project is licensed under the MIT License, see the LICENSE.txt file for details
