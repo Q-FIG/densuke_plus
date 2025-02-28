@@ -39,180 +39,186 @@ let cBulkFlgCheck = false;
 let btnNum = 3;
 
 (() => {
-  // 追加エリア 「一括で変更する」の後に追加
-  const bulkarea = document.getElementById('bulkarea');
-  btnNum = bulkarea.querySelectorAll('span.btnsp').length;
-
-  // 以下、追加分
-  const addArea =  document.createElement('details');
-  addArea.className = 'd-plus-area';
-  bulkarea.after(addArea);
-
-  // 追加分タイトル
-  const summary = document.createElement('summary');
-  summary.textContent = '【拡張分】曜日・祝日指定を、一括で変更する';
-  addArea.appendChild(summary);
-
-  // 選択肢
-  const selectMode = document.createElement('select');
-  selectMode.className = 'c-item';
-  selectMode.addEventListener('change', function(event) {
-    // console.log(`選択したモードが、「${selectedBulkInsertModeNum}」から「${event.target.value}」に変更されます`);
-    selectedBulkInsertModeNum = event.target.value;
-
-    // 祝日を選択したなら、年入力欄を表示、その他なら非表示
-    const yearInput = document.querySelector('label#scheduleYearArea');
-    if (event.target.value == "祝日" && yearInput.classList.contains(noneYearinput)) {
-      yearInput.classList.remove(noneYearinput);
-    } else if (event.target.value != "祝日" && !yearInput.classList.contains(noneYearinput)) {
-      yearInput.classList.add(noneYearinput);
-    }
-  });
-  addArea.appendChild(selectMode);
+  try {
+    // 追加エリア 「一括で変更する」の後に追加
+    const bulkarea = document.getElementById('bulkarea');
+    if (bulkarea) {
+      btnNum = bulkarea.querySelectorAll('span.btnsp').length;
   
-  // 選択要素の追加
-  const option_selectMode_0 = document.createElement('option');
-  option_selectMode_0.value = "";
-  option_selectMode_0.textContent = '曜日を選択';
-  selectMode.appendChild(option_selectMode_0);
-
-  for (let i = 0; i < bulkInsertList.length; i++) {
-    const option_selectMode = document.createElement('option');
-    option_selectMode.value = bulkInsertList[i];
-    option_selectMode.textContent = bulkInsertList[i];
-    selectMode.appendChild(option_selectMode);
-  }
-
-  // 何年の予定なのか指定する欄の追加（祝日指定の場合）
-  const startYearInputLabel = document.createElement('label');
-  startYearInputLabel.id = 'scheduleYearArea';
-  startYearInputLabel.className = 'c-item none-yearinput';
-  startYearInputLabel.textContent = '何年の予定か：';
-  addArea.appendChild(startYearInputLabel);
-
-  // 入力欄
-  const startYearInput = document.createElement('input');
-  startYearInput.type = 'number';
-  startYearInput.id = 'scheduleYear';
-  startYearInput.value = new Date().getFullYear();
-  startYearInputLabel.appendChild(startYearInput);
-
-  // 一括変更ボタン
-  for (let i = 4; i > 0; i--) {
-    if (!btnChoices[btnNum][i]) continue;
-
-    // 追加する種類のボタンなら追加
-    const bulkBtn = document.createElement('span');
-    bulkBtn.className = `btnsp btnac${i}`;
-    bulkBtn.addEventListener('click', () => weekChanges(i));
-    bulkBtn.textContent = btnChoices[btnNum][i];
-    addArea.appendChild(bulkBtn);
-  }
-
-  // 入力済みの行は変更しない
-  const cBulkFlgLabel = document.createElement('label');
-  addArea.appendChild(cBulkFlgLabel);
-
-  const cBulkFlg = document.createElement('input');
-  cBulkFlg.type = 'checkbox';
-  cBulkFlg.id = 'cbulkflg';
-  cBulkFlg.addEventListener('change', function(event) {
-    // console.log(`[入力済みの行は変更しない]が、「${cBulkFlgCheck}」から「${event.target.checked}」に変更されます`);
-    cBulkFlgCheck = event.target.checked;
-  });
-  cBulkFlgLabel.appendChild(cBulkFlg);
-
-  const cBulkFlgText = document.createTextNode('入力済みの行は変更しない');
-  cBulkFlgLabel.appendChild(cBulkFlgText);
-
-  // -------------------------------------------
-  // 入力した情報をコピペするボタンの追加
-  const copyBtnsArea = document.createElement('dl');
-  copyBtnsArea.className = 'd-plus-area';
-  addArea.after(copyBtnsArea);
-
-  const copyBtns = document.createElement('dd');
-  copyBtnsArea.appendChild(copyBtns);
-
-  const copyBtn = document.createElement('input');
-  copyBtn.type = 'button';
-  copyBtn.value = 'コピーする';
-  copyBtn.className = 'c-item';
-  copyBtn.addEventListener('click', () => copyInputData());
-  copyBtns.appendChild(copyBtn);
-
-  const pasteBtn = document.createElement('input');
-  pasteBtn.type = 'button';
-  pasteBtn.value = 'ペーストする';
-  pasteBtn.className = 'c-item';
-  pasteBtn.addEventListener('click', () => pasteInputData());
-  copyBtns.appendChild(pasteBtn);
-
-  const convertInputBtnsArea = document.createElement('dd');
-  copyBtnsArea.appendChild(convertInputBtnsArea);
-
-  const convertInputBtnDetails = document.createElement('details');
-  convertInputBtnDetails.className = 'c-item';
-  convertInputBtnsArea.appendChild(convertInputBtnDetails);
-
-  const convertInputSummary = document.createElement('summary');
-  convertInputSummary.textContent = 'ペーストする値のボタン対応';
-  convertInputBtnDetails.appendChild(convertInputSummary);
-
-  const convertInputBtnL = document.createElement('dl');
-  convertInputBtnDetails.appendChild(convertInputBtnL);
-
-  // ボタンの種類分繰り返す
-  for (let i = 4; i > 0; i--) {
-    // コピー元のボタンの種類
-    const convertBtnSet = document.createElement('dd');
-    convertInputBtnL.appendChild(convertBtnSet);
-
-    const convertBtnB = document.createElement('span');
-    convertBtnB.className = `btnsp btnac${i}`;
-    convertBtnB.textContent = btnChoices[4][i];
-    convertBtnSet.appendChild(convertBtnB);
-
-    const convert2 = document.createTextNode(' → ');
-    convertBtnSet.appendChild(convert2);
-
-    // 変換先のボタンの種類を追加する
-    for (let i2 = 4; i2 > 0; i2--) {
-      if (!btnChoices[btnNum][i2]) continue;
+      // 以下、追加分
+      const addArea =  document.createElement('details');
+      addArea.className = 'd-plus-area';
+      bulkarea.after(addArea);
   
-      // 追加する種類のボタンなら追加
-      const convertBtnAItemLabel = document.createElement('label');
-      convertBtnSet.appendChild(convertBtnAItemLabel);
-
-      // ラジオボタンの表示用の要素
-      const convertBtnAItem = document.createElement('span');
-      convertBtnAItem.className = `radio-view btnsp ${i === i2 ? `btnac${i2}` : 'btnna'}`;
-      convertBtnAItem.textContent = btnChoices[btnNum][i2];
-      convertBtnAItemLabel.appendChild(convertBtnAItem);
-
-      // 実際のラジオボタン
-      const convertBtnAItemInput = document.createElement('input');
-      convertBtnAItemInput.type = 'radio';
-      convertBtnAItemInput.name = `convert${i}`;
-      convertBtnAItemInput.value = i2;
-      convertBtnAItemInput.className = `radio-btn`;
-      convertBtnAItemInput.checked = i === i2;
-      convertBtnAItemLabel.appendChild(convertBtnAItemInput);
-
-      // ラジオボタンの状態に応じてクラスを切り替え
-      convertBtnAItemInput.addEventListener('change', () => {
-        if (convertBtnAItemInput.checked) {
-          // すべてのボタンからアクティブクラスを削除
-          const allButtons = convertBtnSet.querySelectorAll('.radio-view');
-          allButtons.forEach(btn => btn.classList.replace(`btnac${
-            Object.entries(btnChoices[btnNum]).find(([k, v]) => v === btn.textContent)?.[0]
-          }`, 'btnna'));
-          
-          // 選択したボタンにアクティブクラスを追加
-          convertBtnAItem.classList.replace('btnna', `btnac${i2}`);
+      // 追加分タイトル
+      const summary = document.createElement('summary');
+      summary.textContent = '【拡張分】曜日・祝日指定を、一括で変更する';
+      addArea.appendChild(summary);
+  
+      // 選択肢
+      const selectMode = document.createElement('select');
+      selectMode.className = 'c-item';
+      selectMode.addEventListener('change', function(event) {
+        // console.log(`選択したモードが、「${selectedBulkInsertModeNum}」から「${event.target.value}」に変更されます`);
+        selectedBulkInsertModeNum = event.target.value;
+  
+        // 祝日を選択したなら、年入力欄を表示、その他なら非表示
+        const yearInput = document.querySelector('label#scheduleYearArea');
+        if (event.target.value == "祝日" && yearInput.classList.contains(noneYearinput)) {
+          yearInput.classList.remove(noneYearinput);
+        } else if (event.target.value != "祝日" && !yearInput.classList.contains(noneYearinput)) {
+          yearInput.classList.add(noneYearinput);
         }
       });
+      addArea.appendChild(selectMode);
+      
+      // 選択要素の追加
+      const option_selectMode_0 = document.createElement('option');
+      option_selectMode_0.value = "";
+      option_selectMode_0.textContent = '曜日を選択';
+      selectMode.appendChild(option_selectMode_0);
+  
+      for (let i = 0; i < bulkInsertList.length; i++) {
+        const option_selectMode = document.createElement('option');
+        option_selectMode.value = bulkInsertList[i];
+        option_selectMode.textContent = bulkInsertList[i];
+        selectMode.appendChild(option_selectMode);
+      }
+  
+      // 何年の予定なのか指定する欄の追加（祝日指定の場合）
+      const startYearInputLabel = document.createElement('label');
+      startYearInputLabel.id = 'scheduleYearArea';
+      startYearInputLabel.className = 'c-item none-yearinput';
+      startYearInputLabel.textContent = '何年の予定か：';
+      addArea.appendChild(startYearInputLabel);
+  
+      // 入力欄
+      const startYearInput = document.createElement('input');
+      startYearInput.type = 'number';
+      startYearInput.id = 'scheduleYear';
+      startYearInput.value = new Date().getFullYear();
+      startYearInputLabel.appendChild(startYearInput);
+  
+      // 一括変更ボタン
+      for (let i = 4; i > 0; i--) {
+        if (!btnChoices[btnNum][i]) continue;
+  
+        // 追加する種類のボタンなら追加
+        const bulkBtn = document.createElement('span');
+        bulkBtn.className = `btnsp btnac${i}`;
+        bulkBtn.addEventListener('click', () => weekChanges(i));
+        bulkBtn.textContent = btnChoices[btnNum][i];
+        addArea.appendChild(bulkBtn);
+      }
+  
+      // 入力済みの行は変更しない
+      const cBulkFlgLabel = document.createElement('label');
+      addArea.appendChild(cBulkFlgLabel);
+  
+      const cBulkFlg = document.createElement('input');
+      cBulkFlg.type = 'checkbox';
+      cBulkFlg.id = 'cbulkflg';
+      cBulkFlg.addEventListener('change', function(event) {
+        // console.log(`[入力済みの行は変更しない]が、「${cBulkFlgCheck}」から「${event.target.checked}」に変更されます`);
+        cBulkFlgCheck = event.target.checked;
+      });
+      cBulkFlgLabel.appendChild(cBulkFlg);
+  
+      const cBulkFlgText = document.createTextNode('入力済みの行は変更しない');
+      cBulkFlgLabel.appendChild(cBulkFlgText);
+  
+      // -------------------------------------------
+      // 入力した情報をコピペするボタンの追加
+      const copyBtnsArea = document.createElement('dl');
+      copyBtnsArea.className = 'd-plus-area';
+      addArea.after(copyBtnsArea);
+  
+      const copyBtns = document.createElement('dd');
+      copyBtnsArea.appendChild(copyBtns);
+  
+      const copyBtn = document.createElement('input');
+      copyBtn.type = 'button';
+      copyBtn.value = 'コピーする';
+      copyBtn.className = 'c-item';
+      copyBtn.addEventListener('click', () => copyInputData());
+      copyBtns.appendChild(copyBtn);
+  
+      const pasteBtn = document.createElement('input');
+      pasteBtn.type = 'button';
+      pasteBtn.value = 'ペーストする';
+      pasteBtn.className = 'c-item';
+      pasteBtn.addEventListener('click', () => pasteInputData());
+      copyBtns.appendChild(pasteBtn);
+  
+      const convertInputBtnsArea = document.createElement('dd');
+      copyBtnsArea.appendChild(convertInputBtnsArea);
+  
+      const convertInputBtnDetails = document.createElement('details');
+      convertInputBtnDetails.className = 'c-item';
+      convertInputBtnsArea.appendChild(convertInputBtnDetails);
+  
+      const convertInputSummary = document.createElement('summary');
+      convertInputSummary.textContent = 'ペーストする値のボタン対応';
+      convertInputBtnDetails.appendChild(convertInputSummary);
+  
+      const convertInputBtnL = document.createElement('dl');
+      convertInputBtnDetails.appendChild(convertInputBtnL);
+  
+      // ボタンの種類分繰り返す
+      for (let i = 4; i > 0; i--) {
+        // コピー元のボタンの種類
+        const convertBtnSet = document.createElement('dd');
+        convertInputBtnL.appendChild(convertBtnSet);
+  
+        const convertBtnB = document.createElement('span');
+        convertBtnB.className = `btnsp btnac${i}`;
+        convertBtnB.textContent = btnChoices[4][i];
+        convertBtnSet.appendChild(convertBtnB);
+  
+        const convert2 = document.createTextNode(' → ');
+        convertBtnSet.appendChild(convert2);
+  
+        // 変換先のボタンの種類を追加する
+        for (let i2 = 4; i2 > 0; i2--) {
+          if (!btnChoices[btnNum][i2]) continue;
+      
+          // 追加する種類のボタンなら追加
+          const convertBtnAItemLabel = document.createElement('label');
+          convertBtnSet.appendChild(convertBtnAItemLabel);
+  
+          // ラジオボタンの表示用の要素
+          const convertBtnAItem = document.createElement('span');
+          convertBtnAItem.className = `radio-view btnsp ${i === i2 ? `btnac${i2}` : 'btnna'}`;
+          convertBtnAItem.textContent = btnChoices[btnNum][i2];
+          convertBtnAItemLabel.appendChild(convertBtnAItem);
+  
+          // 実際のラジオボタン
+          const convertBtnAItemInput = document.createElement('input');
+          convertBtnAItemInput.type = 'radio';
+          convertBtnAItemInput.name = `convert${i}`;
+          convertBtnAItemInput.value = i2;
+          convertBtnAItemInput.className = `radio-btn`;
+          convertBtnAItemInput.checked = i === i2;
+          convertBtnAItemLabel.appendChild(convertBtnAItemInput);
+  
+          // ラジオボタンの状態に応じてクラスを切り替え
+          convertBtnAItemInput.addEventListener('change', () => {
+            if (convertBtnAItemInput.checked) {
+              // すべてのボタンからアクティブクラスを削除
+              const allButtons = convertBtnSet.querySelectorAll('.radio-view');
+              allButtons.forEach(btn => btn.classList.replace(`btnac${
+                Object.entries(btnChoices[btnNum]).find(([k, v]) => v === btn.textContent)?.[0]
+              }`, 'btnna'));
+              
+              // 選択したボタンにアクティブクラスを追加
+              convertBtnAItem.classList.replace('btnna', `btnac${i2}`);
+            }
+          });
+        }
+      }
     }
+  } catch (err) {
+    console.log('エラーが発生しました：' + err);
   }
 })();
 
