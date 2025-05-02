@@ -10,7 +10,9 @@
   "content_scripts": [
     {
       "matches": [
+        "https://www.densuke.biz/event*",
         "https://densuke.biz/event*",
+        "https://www.densuke.biz/edit2*",
         "https://densuke.biz/edit2?*"
       ],
       "js": ["content-scripts/edit.js"],
@@ -18,6 +20,7 @@
     },
     {
       "matches": [
+        "https://www.densuke.biz/list?*",
         "https://densuke.biz/list?*"
       ],
       "js": ["dist/list.js"],
